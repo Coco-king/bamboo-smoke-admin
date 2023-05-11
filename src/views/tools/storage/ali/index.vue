@@ -34,7 +34,7 @@
           :on-error="handleError"
           :file-list="fileList"
           :headers="headers"
-          :action="qiNiuUploadApi"
+          :action="aliUploadApi"
           class="upload-demo"
           multiple
         >
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import crudQiNiu from '@/api/tools/qiniu'
+import crudAli from '@/api/tools/ali'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/utils/auth'
 import eForm from './form'
@@ -79,7 +79,7 @@ import DateRangePicker from '@/components/DateRangePicker'
 export default {
   components: { eForm, pagination, crudOperation, rrOperation, DateRangePicker },
   cruds() {
-    return CRUD({ title: '七牛云文件', url: 'api/qiniu-storage', crudMethod: { ...crudQiNiu }})
+    return CRUD({ title: '阿里云文件', url: 'api/ali-storage', crudMethod: { ...crudAli }})
   },
   mixins: [presenter(), header(), crud()],
   data() {
@@ -95,7 +95,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'qiNiuUploadApi'
+      'aliUploadApi'
     ])
   },
   watch: {
@@ -128,7 +128,7 @@ export default {
     handleBeforeRemove(file, fileList) {
       for (let i = 0; i < this.files.length; i++) {
         if (this.files[i].uid === file.uid) {
-          crudQiNiu.del([this.files[i].id]).then(res => {})
+          crudAli.del([this.files[i].id]).then(res => {})
           return true
         }
       }
@@ -155,7 +155,7 @@ export default {
       this.downloadLoading = true
       // 先打开一个空的新窗口，再请求
       this.newWin = window.open()
-      crudQiNiu.download(id).then(res => {
+      crudAli.download(id).then(res => {
         this.downloadLoading = false
         this.url = res.url
       }).catch(err => {
@@ -166,7 +166,7 @@ export default {
     // 同步数据
     synchronize() {
       this.icon = 'el-icon-loading'
-      crudQiNiu.sync().then(res => {
+      crudAli.sync().then(res => {
         this.icon = 'el-icon-refresh'
         this.$message({
           showClose: true,
