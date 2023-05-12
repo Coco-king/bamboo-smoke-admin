@@ -62,6 +62,19 @@
         <!--表单渲染-->
         <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="570px">
           <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="66px">
+            <el-form-item label="头像" prop="avatarPath">
+              <el-upload
+                class="avatar-uploader"
+                :action="qiNiuUploadApi"
+                :headers="headers"
+                :show-file-list="false"
+                :on-success="handleSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <img v-if="form.avatarPath" :src="form.avatarPath" class="avatar" alt="点击上传头像">
+                <i v-else class="el-icon-plus avatar-uploader-icon" />
+              </el-upload>
+            </el-form-item>
             <el-form-item label="用户名" prop="username">
               <el-input v-model="form.username" @keydown.native="keydown($event)" />
             </el-form-item>
@@ -189,6 +202,7 @@
 
 <script>
 import crudUser from '@/api/system/user'
+import { getToken } from '@/utils/auth'
 import { isvalidPhone } from '@/utils/validate'
 import { getDepts, getDeptSuperior } from '@/api/system/dept'
 import { getAll, getLevel } from '@/api/system/role'
@@ -240,6 +254,7 @@ export default {
         { key: 'true', display_name: '激活' },
         { key: 'false', display_name: '锁定' }
       ],
+      header: { 'Authorization': getToken() },
       rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -261,7 +276,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'user'
+      'user', 'aliUploadApi', 'qiNiuUploadApi'
     ])
   },
   created() {
@@ -274,6 +289,21 @@ export default {
     }
   },
   methods: {
+    handleSuccess(response, file) {
+      this.from.avatarPath = URL.createObjectURL(file.raw)
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
     // 禁止输入空格
     keydown(e) {
       if (e.keyCode === 32) {
@@ -480,5 +510,34 @@ export default {
   ::v-deep .vue-treeselect__control,::v-deep .vue-treeselect__placeholder,::v-deep .vue-treeselect__single-value {
     height: 30px;
     line-height: 30px;
+  }
+</style>
+
+<style scoped>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
   }
 </style>
