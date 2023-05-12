@@ -11,15 +11,18 @@
         <el-input v-model="form.bucket" style="width: 95%;" placeholder="存储空间名称作为唯一的 Bucket 识别符" />
       </el-form-item>
       <el-form-item label="外链域名" prop="host">
-        <el-input v-model="form.host" style="width: 95%;" placeholder="外链域名，可自定义，需在阿里云绑定" />
+        <el-input v-model="form.host" style="width: 85%;" placeholder="外链域名，可自定义，需在阿里云绑定" />
+        <el-tooltip class="item" effect="dark" content="点击使用 空间名称 + 存储区域 作为外联域名" placement="top">
+          <el-switch v-model="useBucketAndRegion" :change="setHostUseBucketAndRegion" style="width: 10%;margin-left: 10px" active-color="#13ce66" inactive-color="#ff4949" />
+        </el-tooltip>
       </el-form-item>
       <el-form-item label="存储区域">
         <el-select v-model="form.zone" placeholder="请选择存储区域">
           <el-option
-            v-for="item in zones"
-            :key="item"
-            :label="item"
-            :value="item"
+            v-for="item in dict.ali_oss_region"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
           />
         </el-select>
       </el-form-item>
@@ -47,12 +50,15 @@
 
 <script>
 import { get, update } from '@/api/tools/ali'
+
 export default {
   // 数据字典
-  dicts: ['cloud_storage_type'],
+  dicts: ['cloud_storage_type', 'ali_oss_region'],
   data() {
     return {
-      zones: ['华东', '华北', '华南', '北美', '东南亚'], dialog: false,
+      dialog: false,
+      useBucketAndRegion: false,
+      oldHost: '',
       loading: false, form: { accessKey: '', secretKey: '', bucket: '', host: '', zone: '', type: '', cloudType: '' },
       rules: {
         accessKey: [
@@ -101,6 +107,9 @@ export default {
           return false
         }
       })
+    },
+    setHostUseBucketAndRegion() {
+      this.host = `https://${this.form.bucket}.${this.form.zone}.aliyuncs.com/`
     }
   }
 }

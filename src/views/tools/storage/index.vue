@@ -1,5 +1,5 @@
 <template>
-  <el-tabs v-model="activeName" style="padding-left: 8px;" @tab-click="tabClick">
+  <el-tabs v-model="activeName" style="padding-left: 8px;">
     <el-tab-pane label="本地存储" name="localStorage">
       <Local v-if="activeName === 'localStorage'" ref="local" />
     </el-tab-pane>
