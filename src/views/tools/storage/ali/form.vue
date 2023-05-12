@@ -13,7 +13,7 @@
       <el-form-item label="外链域名" prop="host">
         <el-input v-model="form.host" style="width: 85%;" placeholder="外链域名，可自定义，需在阿里云绑定" />
         <el-tooltip class="item" effect="dark" content="点击使用 空间名称 + 存储区域 作为外联域名" placement="top">
-          <el-switch v-model="useBucketAndRegion" :change="setHostUseBucketAndRegion" style="width: 10%;margin-left: 10px" active-color="#13ce66" inactive-color="#ff4949" />
+          <el-switch v-model="useBucketAndRegion" :disabled="form.bucket === '' || form.zone === ''" style="width: 10%;margin-left: 10px" active-color="#13ce66" inactive-color="#ff4949" @change="setHostUseBucketAndRegion" />
         </el-tooltip>
       </el-form-item>
       <el-form-item label="存储区域">
@@ -108,8 +108,13 @@ export default {
         }
       })
     },
-    setHostUseBucketAndRegion() {
-      this.host = `https://${this.form.bucket}.${this.form.zone}.aliyuncs.com/`
+    setHostUseBucketAndRegion(status) {
+      if (status) {
+        this.oldHost = this.form.host
+        this.form.host = `https://${this.form.bucket}.${this.form.zone}.aliyuncs.com`
+      } else {
+        this.form.host = this.oldHost
+      }
     }
   }
 }
