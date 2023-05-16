@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'imagesUploadApi',
+      'qiNiuUploadApi',
       'baseApi'
     ])
   },
@@ -49,9 +49,8 @@ export default {
       // files 是 input 中选中的文件列表
       // insert 是获取图片 url 后，插入到编辑器的方法
       files.forEach(image => {
-        upload(_this.imagesUploadApi, image).then(res => {
-          const data = res.data
-          const url = _this.baseApi + '/file/' + data.type + '/' + data.realName
+        upload(_this.qiNiuUploadApi, image).then(res => {
+          const url = res.data.data[0]
           insert(url)
         })
       })
