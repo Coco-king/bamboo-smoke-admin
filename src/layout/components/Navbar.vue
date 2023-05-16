@@ -24,7 +24,7 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="user.avatarName ? baseApi + '/avatar/' + user.avatarName : Avatar" class="user-avatar">
+          <img :src="avatarPath" class="user-avatar" alt="用户头像">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -91,6 +91,12 @@ export default {
           value: val
         })
       }
+    },
+    avatarPath() {
+      if (this.user.avatarPath.startsWith('http://') || this.user.avatarPath.startsWith('https://')) {
+        return this.user.avatarPath
+      }
+      return this.user.avatarName ? this.baseApi + '/avatar/' + this.user.avatarName : this.Avatar
     }
   },
   methods: {

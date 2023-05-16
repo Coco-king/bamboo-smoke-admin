@@ -62,19 +62,23 @@
         <!--表单渲染-->
         <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="570px">
           <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="66px">
-            <el-form-item label="头像" prop="avatarPath">
-              <el-upload
-                class="avatar-uploader"
-                :action="qiNiuUploadApi"
-                :headers="headers"
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                :before-upload="beforeAvatarUpload"
-              >
-                <img v-if="form.avatarPath" :src="form.avatarPath" class="avatar" alt="点击上传头像">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-              </el-upload>
-            </el-form-item>
+            <el-row type="flex" class="row-bg" justify="center" style="margin-bottom: 30px">
+              <el-col :span="5">
+                <el-form-item prop="avatarPath" style="margin: 0">
+                  <el-upload
+                    class="avatar-uploader"
+                    :action="qiNiuUploadApi"
+                    :headers="headers"
+                    :show-file-list="false"
+                    :on-success="handleSuccess"
+                    :before-upload="beforeAvatarUpload"
+                  >
+                    <img v-if="avatarPath" :src="avatarPath" class="avatar" alt="点击上传头像">
+                    <i v-else class="el-icon-plus avatar-uploader-icon" />
+                  </el-upload>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-form-item label="用户名" prop="username">
               <el-input v-model="form.username" @keydown.native="keydown($event)" />
             </el-form-item>
@@ -219,7 +223,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
 let userRoles = []
 let userJobs = []
-const defaultForm = { id: null, username: null, nickName: null, gender: '男', email: null, enabled: 'false', roles: [], jobs: [], dept: { id: null }, phone: null }
+const defaultForm = { id: null, username: null, nickName: null, gender: '男', email: null, avatarPath: '', enabled: 'false', roles: [], jobs: [], dept: { id: null }, phone: null }
 export default {
   name: 'User',
   components: { Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker },
@@ -254,7 +258,8 @@ export default {
         { key: 'true', display_name: '激活' },
         { key: 'false', display_name: '锁定' }
       ],
-      header: { 'Authorization': getToken() },
+      headers: { 'Authorization': getToken() },
+      avatarPath: '',
       rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -290,7 +295,7 @@ export default {
   },
   methods: {
     handleSuccess(response, file) {
-      this.from.avatarPath = URL.createObjectURL(file.raw)
+      this.avatarPath = response.data[0]
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
@@ -347,9 +352,11 @@ export default {
     [CRUD.HOOK.beforeToAdd]() {
       this.jobDatas = []
       this.roleDatas = []
+      this.avatarPath = ''
     },
     // 初始化编辑时候的角色与岗位
     [CRUD.HOOK.beforeToEdit](crud, form) {
+      this.avatarPath = crud.form.avatarPath
       this.getJobs(this.form.dept.id)
       this.jobDatas = []
       this.roleDatas = []
@@ -390,6 +397,7 @@ export default {
       }
       crud.form.roles = userRoles
       crud.form.jobs = userJobs
+      crud.form.avatarPath = this.avatarPath
       return true
     },
     // 获取左侧部门数据
@@ -513,7 +521,7 @@ export default {
   }
 </style>
 
-<style scoped>
+<style>
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -525,19 +533,21 @@ export default {
   .avatar-uploader .el-upload:hover {
     border-color: #409EFF;
   }
+</style>
 
+<style scoped>
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
+    width: 110px;
+    height: 110px;
+    line-height: 110px;
     text-align: center;
   }
 
   .avatar {
-    width: 178px;
-    height: 178px;
+    width: 110px;
+    height: 110px;
     display: block;
   }
 </style>
