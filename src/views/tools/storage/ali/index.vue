@@ -50,10 +50,33 @@
         <el-table-column type="selection" width="55" />
         <el-table-column prop="name" :show-overflow-tooltip="true" label="文件名">
           <template slot-scope="scope">
-            <a href="JavaScript:" class="el-link el-link--primary" target="_blank" type="primary" @click="download(scope.row.id)">{{ scope.row.key }}</a>
+            <el-popover placement="right-start" trigger="hover">
+              <el-image :src="scope.row.url + (scope.row.bucket === 'bamboo-smoke' ? '?x-oss-process=style/hoverImg' : '')" style="height: 500px">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+              <a slot="reference" href="JavaScript:" class="el-link el-link--primary" target="_blank" type="primary" @click="download(scope.row.id)">{{ scope.row.key }}</a>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" prop="suffix" label="文件类型" @selection-change="crud.selectionChangeHandler" />
+        <el-table-column prop="url" label="预览">
+          <template slot-scope="scope">
+            <el-popover placement="right-start" trigger="hover">
+              <el-image :src="scope.row.url + (scope.row.bucket === 'bamboo-smoke' ? '?x-oss-process=style/hoverImg' : '')" style="height: 500px">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+              <el-image slot="reference" :src="scope.row.url + (scope.row.bucket === 'bamboo-smoke' ? '?x-oss-process=style/listThumb' : '')" style="height: 30px" @click="download(scope.row.id)">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
+            </el-popover>
+          </template>
+        </el-table-column>
         <el-table-column prop="bucket" label="空间名称" />
         <el-table-column prop="size" label="文件大小" />
         <el-table-column prop="type" label="空间类型" />
