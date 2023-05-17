@@ -34,7 +34,7 @@
           :on-error="handleError"
           :file-list="fileList"
           :headers="headers"
-          :action="aliUploadApi"
+          :action="fdfsUploadApi"
           class="upload-demo"
           multiple
         >
@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import crudAli from '@/api/tools/ali'
+import crudFdfs from '@/api/tools/fdfs'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/utils/auth'
 import eForm from './form'
@@ -102,7 +102,7 @@ import DateRangePicker from '@/components/DateRangePicker'
 export default {
   components: { eForm, pagination, crudOperation, rrOperation, DateRangePicker },
   cruds() {
-    return CRUD({ title: '阿里云文件', url: 'api/ali-storage', crudMethod: { ...crudAli }})
+    return CRUD({ title: 'FastDFS文件', url: 'api/fdfs-storage', crudMethod: { ...crudFdfs }})
   },
   mixins: [presenter(), header(), crud()],
   data() {
@@ -118,7 +118,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'aliUploadApi'
+      'fdfsUploadApi'
     ])
   },
   watch: {
@@ -137,7 +137,7 @@ export default {
     this.crud.optShow.edit = false
   },
   methods: {
-    // 阿里云配置
+    // FastDFS配置
     doConfig() {
       const _this = this.$refs.form
       _this.init()
@@ -151,7 +151,7 @@ export default {
     handleBeforeRemove(file, fileList) {
       for (let i = 0; i < this.files.length; i++) {
         if (this.files[i].uid === file.uid) {
-          crudAli.del([this.files[i].id]).then(res => {})
+          crudFdfs.del([this.files[i].id]).then(res => {})
           return true
         }
       }
@@ -178,7 +178,7 @@ export default {
       this.downloadLoading = true
       // 先打开一个空的新窗口，再请求
       this.newWin = window.open()
-      crudAli.download(id).then(res => {
+      crudFdfs.download(id).then(res => {
         this.downloadLoading = false
         this.url = res.url
       }).catch(err => {
@@ -189,7 +189,7 @@ export default {
     // 同步数据
     synchronize() {
       this.icon = 'el-icon-loading'
-      crudAli.sync().then(res => {
+      crudFdfs.sync().then(res => {
         this.icon = 'el-icon-refresh'
         this.$message({
           showClose: true,

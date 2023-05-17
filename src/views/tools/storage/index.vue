@@ -12,16 +12,20 @@
     <el-tab-pane label="七牛云存储" name="qiNiuStorage">
       <QiNiu v-if="activeName === 'qiNiuStorage'" ref="qiNiu" />
     </el-tab-pane>
+    <el-tab-pane label="FastDFS存储" name="fdfsStorage">
+      <Fdfs v-if="activeName === 'fdfsStorage'" ref="fdfs" />
+    </el-tab-pane>
   </el-tabs>
 </template>
 
 <script>
 import Ali from './ali/index'
 import QiNiu from './qiniu/index'
+import Fdfs from './fdfs/index'
 import Local from './local/index'
 export default {
   name: 'Storage',
-  components: { Ali, QiNiu, Local },
+  components: { Ali, QiNiu, Fdfs, Local },
   data() {
     return {
       activeName: 'localStorage'
@@ -35,6 +39,8 @@ export default {
         this.$refs.qiNiu.crud.toQuery()
       } else if (this.activeName === 'aliStorage') {
         this.$refs.ali.crud.toQuery()
+      } else if (this.activeName === 'fdfsStorage') {
+        this.$refs.fdfs.crud.toQuery()
       }
     }
   }

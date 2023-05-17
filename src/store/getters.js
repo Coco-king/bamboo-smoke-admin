@@ -18,6 +18,7 @@ const getters = {
   updateAvatarApi: state => state.api.updateAvatarApi,
   qiNiuUploadApi: state => state.api.qiNiuUploadApi,
   aliUploadApi: state => state.api.aliUploadApi,
+  fdfsUploadApi: state => state.api.fdfsUploadApi,
   sqlApi: state => state.api.sqlApi,
   swaggerApi: state => state.api.swaggerApi,
   sidebarRouters: state => state.permission.sidebarRouters

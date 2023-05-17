@@ -12,8 +12,10 @@ const api = {
     updateAvatarApi: baseUrl + '/api/users/updateAvatar',
     // 上传文件到七牛云
     qiNiuUploadApi: baseUrl + '/api/qiniu-storage',
-    // 上传文件到七牛云
+    // 上传文件到阿里云
     aliUploadApi: baseUrl + '/api/ali-storage',
+    // 上传文件到FastDFS
+    fdfsUploadApi: baseUrl + '/api/fdfs-storage',
     // Sql 监控
     sqlApi: baseUrl + '/druid/index.html',
     // swagger
